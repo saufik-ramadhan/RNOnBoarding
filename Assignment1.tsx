@@ -83,13 +83,28 @@ const Soal1 = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? 'black' : 'white',
-  };
+  }; 
+
+  interface DataDiri {
+    nama: string,
+    email: string,
+    telepon: string,
+    alamat?: string,
+    hobi?: string
+  }
 
   const [nama, setNama] = useState('');
   const [email, setEmail] = useState('');
   const [telepon, setTelepon] = useState('');
   const [alamat, setAlamat] = useState<string | undefined>();
   const [hobi, setHobi] = useState<string | undefined>();
+
+  const onSubmit = (dataDiri: DataDiri) => 
+    Alert.alert('Data Diri', JSON.stringify(dataDiri), [
+      {text: 'Ok', onPress: () => {
+        setNama(''); setEmail(''); setTelepon(''); setAlamat(''); setHobi('');
+      }}
+    ]);
 
   return (
     <View style={[backgroundStyle, styles.tasks]}>
@@ -135,6 +150,8 @@ const Soal1 = () => {
           //   menampilkan Alert dengan message isian dari form ini
           // - mengimplementasikan interface sesuai dengan tipe data masing-masing input
           // - setelah selesai menampilkan Alert, clear semua input
+          const jsonDataDiri = { nama, email, telepon, alamat, hobi }
+          return onSubmit(jsonDataDiri)
         }}
         title="Submit"
       />
@@ -156,6 +173,20 @@ const Soal2 = (param: ISoal2) => {
 
   const [input1, setInput1] = useState<string>('');
   const [input2, setInput2] = useState<string>('');
+
+  const onCalculate = (tanda: string) => {
+    let result: number
+    switch(tanda) {
+      case '+': result = eval(`${input1}+${input2}`); break;
+      case '-': result = eval(`${input1}-${input2}`); break;
+      case 'x': result = eval(`${input1}*${input2}`); break;
+      case ':': result = eval(`${input1}/${input2}`); break;
+      default: result = NaN
+    }
+    setInput1('');
+    setInput2('');
+    return param.onPress(result);
+  }
 
   return (
     <View style={[backgroundStyle, styles.tasks]}>
@@ -197,6 +228,7 @@ const Soal2 = (param: ISoal2) => {
           // - mengimplementasikan interface
           // - validasi input & convert input sebelum melakukan perhitungan
           // - setelah hitung selesai, clear input
+          return onCalculate(param.tanda);
         }}
         title="Hitung"
       />
